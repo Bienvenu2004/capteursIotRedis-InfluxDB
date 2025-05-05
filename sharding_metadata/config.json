@@ -1,0 +1,36 @@
+{
+  "shards": {
+    "salon": {
+      "host": "localhost",
+      "port": 6379
+    },
+    "chambre1": {
+      "host": "localhost",
+      "port": 6380
+    },
+    "chambre2": {
+      "host": "localhost",
+      "port": 6381
+    },
+    "cuisine": {
+      "host": "localhost",
+      "port": 6382
+    },
+    "salle_de_bain": {
+      "host": "localhost",
+      "port": 6383
+    }
+  },
+  "locations": [
+    "salon",
+    "chambre1",
+    "chambre2",
+    "cuisine",
+    "salle_de_bain"
+  ],
+  "sensor_types": [
+    "temperature",
+    "humidity",
+    "air_quality"
+  ]
+}

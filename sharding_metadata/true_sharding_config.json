@@ -1,0 +1,46 @@
+{
+  "shards": {
+    "salon": {
+      "host": "localhost",
+      "port": 6379,
+      "container": "redis-salon-master"
+    },
+    "chambre1": {
+      "host": "localhost",
+      "port": 6381,
+      "container": "redis-chambre1-master"
+    },
+    "chambre2": {
+      "host": "localhost",
+      "port": 6383,
+      "container": "redis-chambre2-master"
+    },
+    "cuisine": {
+      "host": "localhost",
+      "port": 6385,
+      "container": "redis-cuisine-master"
+    },
+    "salle_de_bain": {
+      "host": "localhost",
+      "port": 6387,
+      "container": "redis-salle-de-bain-master"
+    }
+  },
+  "locations": [
+    "salon",
+    "chambre1",
+    "chambre2",
+    "cuisine",
+    "salle_de_bain"
+  ],
+  "sensor_types": [
+    "temperature",
+    "humidity",
+    "air_quality"
+  ],
+  "unit_measures": {
+    "temperature": "celsius",
+    "humidity": "percent",
+    "air_quality": "aqi"
+  }
+}

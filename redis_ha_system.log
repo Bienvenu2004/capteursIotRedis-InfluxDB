@@ -1,0 +1,18 @@
+2025-05-04 12:15:16,161 - INFO - Connecté au shard salon via Sentinel (ID: salon-master)
+2025-05-04 12:15:16,162 - INFO - Connecté au shard chambre1 via Sentinel (ID: chambre1-master)
+2025-05-04 12:15:16,163 - INFO - Connecté au shard chambre2 via Sentinel (ID: chambre2-master)
+2025-05-04 12:15:16,163 - INFO - Connecté au shard cuisine via Sentinel (ID: cuisine-master)
+2025-05-04 12:15:16,164 - INFO - Connecté au shard salle-de-bain via Sentinel (ID: sdb-master)
+2025-05-04 12:15:16,165 - INFO - Configuration de HA sharding sauvegardée
+2025-05-04 12:15:33,732 - INFO - Connecté au shard salon via Sentinel (ID: salon-master)
+2025-05-04 12:15:33,732 - INFO - Connecté au shard chambre1 via Sentinel (ID: chambre1-master)
+2025-05-04 12:15:33,733 - INFO - Connecté au shard chambre2 via Sentinel (ID: chambre2-master)
+2025-05-04 12:15:33,733 - INFO - Connecté au shard cuisine via Sentinel (ID: cuisine-master)
+2025-05-04 12:15:33,734 - INFO - Connecté au shard salle-de-bain via Sentinel (ID: sdb-master)
+2025-05-04 12:15:33,735 - INFO - Configuration de HA sharding sauvegardée
+2025-05-04 12:17:23,230 - INFO - Connecté au shard salon via Sentinel (ID: salon-master)
+2025-05-04 12:17:23,231 - INFO - Connecté au shard chambre1 via Sentinel (ID: chambre1-master)
+2025-05-04 12:17:23,231 - INFO - Connecté au shard chambre2 via Sentinel (ID: chambre2-master)
+2025-05-04 12:17:23,232 - INFO - Connecté au shard cuisine via Sentinel (ID: cuisine-master)
+2025-05-04 12:17:23,232 - INFO - Connecté au shard salle-de-bain via Sentinel (ID: sdb-master)
+2025-05-04 12:17:23,233 - INFO - Configuration de HA sharding sauvegardée

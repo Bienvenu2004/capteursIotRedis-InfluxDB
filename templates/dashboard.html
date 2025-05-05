@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Surveillance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #6c757d;
+        }
+        /* Augmenter la hauteur du conteneur de graphique pour assurer la visibilité */
+        #count-graph-container {
+            height: 300px !important;
+            width: 100%;
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <h1 class="mb-4">Dashboard de Surveillance des Capteurs</h1>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Visualisation des Données</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="location-select" class="form-label">Emplacement</label>
+                                <select class="form-select" id="location-select">
+                                    {% for location in locations %}
+                                    <option value="{{ location }}">{{ location }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="sensor-type-select" class="form-label">Type de Capteur</label>
+                                <select class="form-select" id="sensor-type-select">
+                                    {% for sensor_type in sensor_types %}
+                                    <option value="{{ sensor_type }}">{{ sensor_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="sensor-id-select" class="form-label">Capteur ID</label>
+                                <select class="form-select" id="sensor-id-select">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="time-range-select" class="form-label">Période</label>
+                                <select class="form-select" id="time-range-select">
+                                    <option value="1h">1 heure</option>
+                                    <option value="24h">24 heures</option>
+                                    <option value="7d">7 jours</option>
+                                    <option value="30d">30 jours</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="graph-container" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Statistiques</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="stats-container">
+                            <div class="col-md-6 stat-card">
+                                <div class="stat-value" id="min-value">-</div>
+                                <div class="stat-label">Minimum</div>
+                            </div>
+                            <div class="col-md-6 stat-card">
+                                <div class="stat-value" id="max-value">-</div>
+                                <div class="stat-label">Maximum</div>
+                            </div>
+                            <div class="col-md-6 stat-card">
+                                <div class="stat-value" id="avg-value">-</div>
+                                <div class="stat-label">Moyenne</div>
+                            </div>
+                            <div class="col-md-6 stat-card">
+                                <div class="stat-value" id="count-value">-</div>
+                                <div class="stat-label">Nombre</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Nombre de Données par Emplacement</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="count-location-select" class="form-label">Emplacement</label>
+                            <select class="form-select" id="count-location-select">
+                                {% for location in locations %}
+                                <option value="{{ location }}">{{ location }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Changer la hauteur et ajouter une div pour le débogage -->
+                        <div id="count-graph-container"></div>
+                        <div id="count-debug" class="mt-2 text-muted small"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Recherche de Capteurs</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="search-query" placeholder="Rechercher un capteur...">
+                            <button class="btn btn-primary" id="search-button">Rechercher</button>
+                        </div>
+                        <div id="search-results">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Emplacement</th>
+                                        <th>Capteur ID</th>
+                                        <th>Échantillons</th>
+                                        <th>Première Donnée</th>
+                                        <th>Dernière Donnée</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results-table-body">
+                                    <!-- Les résultats seront insérés ici -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour charger les données initiales
+        function loadInitialData() {
+            const location = document.getElementById('location-select').value;
+            const sensorType = document.getElementById('sensor-type-select').value;
+            const sensorId = document.getElementById('sensor-id-select').value;
+            const timeRange = document.getElementById('time-range-select').value;
+
+            fetchSensorData(location, sensorType, sensorId, timeRange);
+            fetchSensorCount(location);
+        }
+
+        // Fonction pour récupérer les données du capteur
+        function fetchSensorData(location, sensorType, sensorId, timeRange) {
+            fetch('/get_sensor_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    location: location,
+                    sensor_type: sensorType,
+                    sensor_id: sensorId,
+                    time_range: timeRange
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Afficher le graphique
+                    const graph = JSON.parse(data.graph);
+                    Plotly.newPlot('graph-container', graph.data, graph.layout);
+
+                    // Mettre à jour les statistiques
+                    if (data.stats) {
+                        document.getElementById('min-value').textContent = data.stats.min.toFixed(2);
+                        document.getElementById('max-value').textContent = data.stats.max.toFixed(2);
+                        document.getElementById('avg-value').textContent = data.stats.avg.toFixed(2);
+                        document.getElementById('count-value').textContent = data.stats.count;
+                    }
+                } else {
+                    console.error('Erreur:', data.message);
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        }
+
+        // Fonction améliorée pour récupérer et afficher le nombre de données
+        function fetchSensorCount(location) {
+            // Effacer le graphique existant et afficher un message de chargement
+            document.getElementById('count-graph-container').innerHTML = '<div class="text-center p-3">Chargement des données...</div>';
+
+            fetch('/get_sensor_count', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    location: location
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const debugDiv = document.getElementById('count-debug');
+                    //debugDiv.innerHTML = `Données reçues: ${JSON.stringify(data.counts).substring(0, 100)}...`;
+
+                    // Vérifier si nous avons reçu des données valides
+                    if (!data.counts || data.counts.length === 0) {
+                        document.getElementById('count-graph-container').innerHTML =
+                            '<div class="alert alert-warning">Aucune donnée disponible pour cet emplacement</div>';
+                        return;
+                    }
+
+                    // Préparer les données pour le graphique
+                    const countsByType = {};
+
+                    data.counts.forEach(item => {
+                        if (!countsByType[item.sensor_type]) {
+                            countsByType[item.sensor_type] = 0;
+                        }
+                        countsByType[item.sensor_type] += item.count;
+                    });
+
+                    const types = Object.keys(countsByType);
+                    const counts = types.map(type => countsByType[type]);
+
+                    const trace = {
+                        x: types,
+                        y: counts,
+                        type: 'bar',
+                        marker: {
+                            color: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b']
+                        }
+                    };
+
+                    const layout = {
+                        title: `Nombre total de données dans ${location}`,
+                        xaxis: { title: 'Type de capteur' },
+                        yaxis: { title: 'Nombre de données' },
+                        autosize: true,
+                        margin: { l: 50, r: 50, b: 80, t: 80, pad: 4 }
+                    };
+
+                    // S'assurer que le conteneur est vide avant de dessiner le graphique
+                    document.getElementById('count-graph-container').innerHTML = '';
+
+                    try {
+                        Plotly.newPlot('count-graph-container', [trace], layout, {responsive: true});
+                        console.log("Graphique généré avec succès");
+                    } catch (e) {
+                        console.error("Erreur lors de la création du graphique:", e);
+                        document.getElementById('count-debug').innerHTML +=
+                            `<br>Erreur: ${e.message}`;
+                    }
+                } else {
+                    console.error('Erreur:', data.message);
+                    document.getElementById('count-graph-container').innerHTML =
+                        `<div class="alert alert-danger">Erreur: ${data.message}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('count-graph-container').innerHTML =
+                    `<div class="alert alert-danger">Erreur de connexion: ${error.message}</div>`;
+            });
+        }
+
+        // Fonction pour effectuer une recherche
+        function performSearch(query) {
+            fetch('/search_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: query
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const tbody = document.getElementById('results-table-body');
+                    tbody.innerHTML = '';
+
+                    if (data.results.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Aucun résultat trouvé</td></tr>';
+                        return;
+                    }
+
+                    data.results.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.sensor_type}</td>
+                            <td>${item.location}</td>
+                            <td>${item.sensor_id}</td>
+                            <td>${item.samples}</td>
+                            <td>${item.first_timestamp}</td>
+                            <td>${item.last_timestamp}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    console.error('Erreur:', data.message);
+                    document.getElementById('results-table-body').innerHTML =
+                        `<tr><td colspan="6" class="text-center text-danger">Erreur: ${data.message}</td></tr>`;
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('results-table-body').innerHTML =
+                    `<tr><td colspan="6" class="text-center text-danger">Erreur de connexion: ${error.message}</td></tr>`;
+            });
+        }
+
+        // Écouteurs d'événements
+        document.getElementById('location-select').addEventListener('change', function() {
+            const location = this.value;
+            const sensorType = document.getElementById('sensor-type-select').value;
+            const sensorId = document.getElementById('sensor-id-select').value;
+            const timeRange = document.getElementById('time-range-select').value;
+
+            fetchSensorData(location, sensorType, sensorId, timeRange);
+            fetchSensorCount(location);
+        });
+
+        document.getElementById('sensor-type-select').addEventListener('change', function() {
+            const location = document.getElementById('location-select').value;
+            const sensorType = this.value;
+            const sensorId = document.getElementById('sensor-id-select').value;
+            const timeRange = document.getElementById('time-range-select').value;
+
+            fetchSensorData(location, sensorType, sensorId, timeRange);
+        });
+
+        document.getElementById('sensor-id-select').addEventListener('change', function() {
+            const location = document.getElementById('location-select').value;
+            const sensorType = document.getElementById('sensor-type-select').value;
+            const sensorId = this.value;
+            const timeRange = document.getElementById('time-range-select').value;
+
+            fetchSensorData(location, sensorType, sensorId, timeRange);
+        });
+
+        document.getElementById('time-range-select').addEventListener('change', function() {
+            const location = document.getElementById('location-select').value;
+            const sensorType = document.getElementById('sensor-type-select').value;
+            const sensorId = document.getElementById('sensor-id-select').value;
+            const timeRange = this.value;
+
+            fetchSensorData(location, sensorType, sensorId, timeRange);
+        });
+
+        document.getElementById('count-location-select').addEventListener('change', function() {
+            fetchSensorCount(this.value);
+        });
+
+        document.getElementById('search-button').addEventListener('click', function() {
+            const query = document.getElementById('search-query').value;
+            if (query.trim() !== '') {
+                performSearch(query);
+            }
+        });
+
+        document.getElementById('search-query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value;
+                if (query.trim() !== '') {
+                    performSearch(query);
+                }
+            }
+        });
+
+        // Charger les données initiales au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM chargé, initialisation des données...");
+            loadInitialData();
+        });
+    </script>
+</body>
+</html>

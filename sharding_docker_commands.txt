@@ -1,0 +1,21 @@
+# Créer un réseau Docker pour la communication entre les instances
+docker network create redis-net
+
+# Créer 5 instances Redis indépendantes (une par emplacement)
+# Instance pour salon
+docker run -d --name redis-salon --network redis-net -p 6379:6379 redis/redis-stack
+
+# Instance pour chambre1
+docker run -d --name redis-chambre1 --network redis-net -p 6380:6379 redis/redis-stack
+
+# Instance pour chambre2
+docker run -d --name redis-chambre2 --network redis-net -p 6381:6379 redis/redis-stack
+
+# Instance pour cuisine
+docker run -d --name redis-cuisine --network redis-net -p 6382:6379 redis/redis-stack
+
+# Instance pour salle_de_bain
+docker run -d --name redis-salle-de-bain --network redis-net -p 6383:6379 redis/redis-stack
+
+# Vérifier que les conteneurs sont en cours d'exécution
+docker ps

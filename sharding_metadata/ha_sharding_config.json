@@ -1,0 +1,171 @@
+{
+  "shards": {
+    "salon": {
+      "master": {
+        "host": "localhost",
+        "port": 6379,
+        "container": "redis-salon-master"
+      },
+      "replica": {
+        "host": "localhost",
+        "port": 6380,
+        "container": "redis-salon-replica"
+      },
+      "sentinels": [
+        {
+          "host": "localhost",
+          "port": 26379,
+          "container": "redis-salon-sentinel1"
+        },
+        {
+          "host": "localhost",
+          "port": 26380,
+          "container": "redis-salon-sentinel2"
+        },
+        {
+          "host": "localhost",
+          "port": 26381,
+          "container": "redis-salon-sentinel3"
+        }
+      ],
+      "sentinel_id": "salon-master"
+    },
+    "chambre1": {
+      "master": {
+        "host": "localhost",
+        "port": 6381,
+        "container": "redis-chambre1-master"
+      },
+      "replica": {
+        "host": "localhost",
+        "port": 6382,
+        "container": "redis-chambre1-replica"
+      },
+      "sentinels": [
+        {
+          "host": "localhost",
+          "port": 26382,
+          "container": "redis-chambre1-sentinel1"
+        },
+        {
+          "host": "localhost",
+          "port": 26383,
+          "container": "redis-chambre1-sentinel2"
+        },
+        {
+          "host": "localhost",
+          "port": 26384,
+          "container": "redis-chambre1-sentinel3"
+        }
+      ],
+      "sentinel_id": "chambre1-master"
+    },
+    "chambre2": {
+      "master": {
+        "host": "localhost",
+        "port": 6383,
+        "container": "redis-chambre2-master"
+      },
+      "replica": {
+        "host": "localhost",
+        "port": 6384,
+        "container": "redis-chambre2-replica"
+      },
+      "sentinels": [
+        {
+          "host": "localhost",
+          "port": 26385,
+          "container": "redis-chambre2-sentinel1"
+        },
+        {
+          "host": "localhost",
+          "port": 26386,
+          "container": "redis-chambre2-sentinel2"
+        },
+        {
+          "host": "localhost",
+          "port": 26387,
+          "container": "redis-chambre2-sentinel3"
+        }
+      ],
+      "sentinel_id": "chambre2-master"
+    },
+    "cuisine": {
+      "master": {
+        "host": "localhost",
+        "port": 6385,
+        "container": "redis-cuisine-master"
+      },
+      "replica": {
+        "host": "localhost",
+        "port": 6386,
+        "container": "redis-cuisine-replica"
+      },
+      "sentinels": [
+        {
+          "host": "localhost",
+          "port": 26388,
+          "container": "redis-cuisine-sentinel1"
+        },
+        {
+          "host": "localhost",
+          "port": 26389,
+          "container": "redis-cuisine-sentinel2"
+        },
+        {
+          "host": "localhost",
+          "port": 26390,
+          "container": "redis-cuisine-sentinel3"
+        }
+      ],
+      "sentinel_id": "cuisine-master"
+    },
+    "salle-de-bain": {
+      "master": {
+        "host": "localhost",
+        "port": 6387,
+        "container": "redis-salle-de-bain-master"
+      },
+      "replica": {
+        "host": "localhost",
+        "port": 6388,
+        "container": "redis-salle-de-bain-replica"
+      },
+      "sentinels": [
+        {
+          "host": "localhost",
+          "port": 26391,
+          "container": "redis-salle-de-bain-sentinel1"
+        },
+        {
+          "host": "localhost",
+          "port": 26392,
+          "container": "redis-salle-de-bain-sentinel2"
+        },
+        {
+          "host": "localhost",
+          "port": 26393,
+          "container": "redis-salle-de-bain-sentinel3"
+        }
+      ],
+      "sentinel_id": "sdb-master"
+    }
+  },
+  "locations": [
+    "salon",
+    "chambre1",
+    "chambre2",
+    "cuisine",
+    "salle-de-bain"
+  ],
+  "sensor_types": [
+    "temperature",
+    "humidity",
+    "air_quality"
+  ],
+  "unit_measures": {
+    "temperature": "celsius",
+    "humidity": "percent",
+    "air_quality": "aqi"
+  }
+}
